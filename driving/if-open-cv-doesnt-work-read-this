@@ -1,0 +1,1 @@
+I moved cv2.so and cv.py from /usr/local/lib/python2.7/site-packages to /home/ubuntu/code/racecar/driving/env/lib/python2.7/site-packages. Try moving them back. Otherwise, reinstall/remake OpenCV.
