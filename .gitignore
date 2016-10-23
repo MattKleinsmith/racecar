@@ -1,1 +1,13 @@
+# Python virtualenv
 env/
+
+# Vim
+*.swp
+
+# Android Studio
+*gradle*
+.idea
+*.iml
+build/
+proguard-rules.pro
+local.properties
