@@ -80,9 +80,9 @@ double getCommand(int delim, int len, int newByte, int kind) {
       }
     }
   }
-  //printarray(commandBytes, len); // for debugging
+  printarray(commandBytes, len); // for debugging
   double command = catint(commandBytes, len);
-  //Serial.println(command); // for debugging
+  Serial.println(command); // for debugging
   return cleanCommand(command, kind);
 }
 
@@ -100,7 +100,7 @@ double catint(int array[], int len) {
 double cleanCommand(double command, int kind) {
   if (kind == 0) {
       command = normalizeCommand(command, 0, 100, minThrottle, maxThrottle);
-      //Serial.println(command); // for debugging
+      Serial.println(command); // for debugging
       if (command < minThrottle) {
         command = minThrottle;
       }
@@ -110,7 +110,7 @@ double cleanCommand(double command, int kind) {
   }
   else {
       command = normalizeCommand(command, 0, 100, minSteering, maxSteering);
-      //Serial.println(command); // for debugging
+      Serial.println(command); // for debugging
       if (command < minSteering) {
         command = minSteering;
       }
@@ -118,7 +118,7 @@ double cleanCommand(double command, int kind) {
         command = maxSteering;
       }
   }
-  //Serial.println(command); // for debugging
+  Serial.println(command); // for debugging
   return command;
 }
 
