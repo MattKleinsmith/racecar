@@ -15,10 +15,12 @@
 
 // These are general bounds for the steering servo and the
 // TRAXXAS Electronic Speed Controller (ESC)
-const int minThrottle = 0 ;
-const int maxThrottle = 150 ;
-const int minSteering = 30 ; // 60?(25 in)
-const int maxSteering = 150 ; // 132? (85 in)  // Arduino Uno (not micro) and not a fully charged battery
+const double minThrottle = 0;
+const double neutralThrottle = 91;
+const double maxThrottle = 150;
+const double minSteering = 30; // 60?(25 in)
+const double neutralSteering = 90;
+const double maxSteering = 150; // 132? (85 in)  // Arduino Uno (not micro) and not a fully charged battery
 // Test 1:
   // Board: Arduino Uno, many years old
   // Battery: Not fully charged (did two or three laps around the block with it beforehand)
@@ -43,16 +45,15 @@ Servo eSpeedControl;  // The ESC on the TRAXXAS works like a Servo
 Servo steeringServo;
 
 int newByte = 0;
-double throttle = (maxThrottle - minThrottle) / 2.0; // 75
-double steering = (maxSteering - minSteering) / 2.0; // 90
+double throttle;
+double steering;
 
 void setup() {
   eSpeedControl.attach(5);
-  eSpeedControl.write(90); // Jim said throttle is neutral at 90
+  eSpeedControl.write(neutralThrottle);
   steeringServo.attach(6);
-  steeringServo.write(steering);
+  steeringServo.write(neutralSteering);
   Serial.begin(115200);
-  delay(5000);
 }
 
 void loop() {
@@ -144,3 +145,4 @@ void printlog(double throttle, double steering){
   Serial.println(steering);
   Serial.println();
 }
+
