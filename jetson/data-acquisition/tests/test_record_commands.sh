@@ -8,8 +8,11 @@ fi
 sudo rfcomm release $port
 sudo rfcomm bind $port $phone $channel
 date +%s%3N > jckl0.txt
-#echo "aclk,throttle,steering" > commands.csv
+
+echo "aclk,throttle,steering" > commands.csv
 cat $port >> commands.csv &
+
+#tail -f /dev/ttyACM0 &
 while true; do
-	tail -1 commands.csv | cut -d, -f2- | tee -a sup.csv /dev/ttyACM0
+	tail -f commands.csv | cut -d, -f1- | tee -a arduino.csv /dev/ttyACM0
 done

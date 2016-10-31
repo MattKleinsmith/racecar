@@ -49,9 +49,9 @@ double throttle;
 double steering;
 
 void setup() {
-  eSpeedControl.attach(5);
+  eSpeedControl.attach(10);
   eSpeedControl.write(neutralThrottle);
-  steeringServo.attach(6);
+  steeringServo.attach(11);
   steeringServo.write(neutralSteering);
   Serial.begin(115200);
 }

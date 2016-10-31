@@ -20,6 +20,6 @@ d['diff'] = d.aclk - d.tmp
 sample = d['diff']
 counter = collections.Counter(sample)
 diffs = sorted(d['diff'], reverse=True)
-diffs = rm_dup(diffs)[1:11]
+diffs = rm_dup(diffs)
 for diff in diffs:
     print diff, counter[diff]
