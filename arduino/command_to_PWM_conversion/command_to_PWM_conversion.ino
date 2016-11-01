@@ -1,14 +1,14 @@
 /*
-  License of original code:
-    Arduino ROS node for JetsonCar project
-    The Arduino controls a TRAXXAS Rally Car
-    MIT License
-    JetsonHacks (2016)
-  Link to original code:
-    https://github.com/jetsonhacks/installJetsonCar/blob/master/Arduino%20Firmware/jetsoncar/jetsoncar.ino
-  License of this code:
-    MIT License
-    Matthew Kleinsmith (2016)
+License of original code:
+	Arduino ROS node for JetsonCar project
+	The Arduino controls a TRAXXAS Rally Car
+	MIT License
+	JetsonHacks (2016)
+Link to original code:
+	https://github.com/jetsonhacks/installJetsonCar/blob/master/Arduino%20Firmware/jetsoncar/jetsoncar.ino
+License of this code:
+	MIT License
+	Matthew Kleinsmith (2016)
 */
 
 #include <Servo.h>
@@ -22,19 +22,19 @@ const double minSteering = 30; // 60?(25 in)
 const double neutralSteering = 90;
 const double maxSteering = 150; // 132? (85 in)  // Arduino Uno (not micro) and not a fully charged battery
 // Test 1:
-  // Board: Arduino Uno, many years old
-  // Battery: Not fully charged (did two or three laps around the block with it beforehand)
-  // Throttle:
-    // Min: I don't even want to test this.
-    // Neutral: [59, 63] ([88.5, 94.5])// 64 didn't, but then it did. Maybe the battery's charge changed the neutral range?
-          // 64 didn't trigger, then it did, and then it didn't again. And then it did again. 64 is unstable.
-    // Max: I don't even want to test this.
-  // Steering:
-    // Min: 25 (60 out)
-    // Neutral: 50 (90 out)
-    // Max: 85 (132 out)
-// Important question: How does the charge of the battery affect the map from commands to actions?
-    
+	// Board: Arduino Uno, many years old
+	// Battery: Not fully charged (did two or three laps around the block with it beforehand)
+	// Throttle:
+		// Min: I don't even want to test this.
+		// Neutral: [59, 63] ([88.5, 94.5])// 64 didn't, but then it did. Maybe the battery's charge changed the neutral range?
+			// 64 didn't trigger, then it did, and then it didn't again. And then it did again. 64 is unstable.
+		// Max: I don't even want to test this.
+	// Steering:
+		// Min: 25 (60 out)
+		// Neutral: 50 (90 out)
+		// Max: 85 (132 out)
+	// Important question: How does the charge of the battery affect the map from commands to actions?
+
 // Dealing with ASCII bytes
 const int OFFSET = '0';
 const int COMMA = 44 - OFFSET;
@@ -49,9 +49,9 @@ double throttle;
 double steering;
 
 void setup() {
-  eSpeedControl.attach(5);
+  eSpeedControl.attach(10);
   eSpeedControl.write(neutralThrottle);
-  steeringServo.attach(6);
+  steeringServo.attach(11);
   steeringServo.write(neutralSteering);
   Serial.begin(115200);
 }
@@ -91,7 +91,9 @@ double catint(int array[], int len) {
   int i = 0;
   double k = 0;
   for (i = 0; i < len; i++) {
-    if (array[i] != -1) { k = 10 * k + array[i];}
+    if (array[i] != -1) { 
+      k = 10 * k + array[i];
+    }
   }
   return k;
 }
@@ -99,24 +101,24 @@ double catint(int array[], int len) {
 // normalize and keep within the interval
 double cleanCommand(double command, int kind) {
   if (kind == 0) {
-      command = normalizeCommand(command, 0, 100, minThrottle, maxThrottle);
-      Serial.println(command); // for debugging
-      if (command < minThrottle) {
-        command = minThrottle;
-      }
-      if (command > maxThrottle) {
-        command = maxThrottle;
-      }
+    command = normalizeCommand(command, 0, 100, minThrottle, maxThrottle);
+    Serial.println(command); // for debugging
+    if (command < minThrottle) {
+      command = minThrottle;
+    }
+    if (command > maxThrottle) {
+      command = maxThrottle;
+    }
   }
   else {
-      command = normalizeCommand(command, 0, 100, minSteering, maxSteering);
-      Serial.println(command); // for debugging
-      if (command < minSteering) {
-        command = minSteering;
-      }
-      if (command > maxSteering) {
-        command = maxSteering;
-      }
+    command = normalizeCommand(command, 0, 100, minSteering, maxSteering);
+    Serial.println(command); // for debugging
+    if (command < minSteering) {
+      command = minSteering;
+    }
+    if (command > maxSteering) {
+      command = maxSteering;
+    }
   }
   Serial.println(command); // for debugging
   return command;
@@ -145,4 +147,5 @@ void printlog(double throttle, double steering){
   Serial.println(steering);
   Serial.println();
 }
+
 
