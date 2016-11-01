@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_get_data"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="matthewkleinsmith.jetsonremotecontrol.GetDataActivity">
+
+    <!-- Throttle -->
+
+    <ImageButton
+        android:id="@+id/forwardButton"
+        android:rotation="-90"
+        android:src="@drawable/forward_arrow_filled_red"
+        android:background="#00000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="112dp"
+        android:layout_marginLeft="112dp"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+
+
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/reverseButton"
+        android:rotation="90"
+        android:src="@drawable/forward_arrow_filled_red"
+        android:background="#00000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="112dp"
+        android:layout_marginLeft="112dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="32dp" />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/throttleBarBackground"
+
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+
+        android:src="@drawable/progress_fill"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="Joystick for throttle" />
+
+    <SeekBar
+        android:visibility="gone"
+
+        android:id="@+id/throttleBar"
+
+        android:progressDrawable="@drawable/progress"
+        android:thumb="@drawable/thumb_red"
+
+        android:rotation="270"
+        android:progress="50"
+
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:paddingRight="40dp"
+        android:paddingEnd="40dp"
+
+        android:paddingLeft="40dp"
+        android:paddingStart="40dp"
+
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/throttleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textSize="48sp"
+        android:textColor="@android:color/black" />
+
+    <!-- Steering -->
+
+    <ImageView
+        android:id="@+id/steeringBarBackground"
+        android:src="@drawable/progress_fill"
+        android:layout_height="12dp"
+        android:layout_width="234dp"
+        android:layout_marginLeft="305dp"
+        android:layout_marginStart="305dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <SeekBar
+        android:id="@+id/steeringBar"
+        android:progress="25"
+        android:max="60"
+        android:layout_width="336dp"
+        android:layout_height="220dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:progressDrawable="@drawable/progress"
+        android:thumb="@drawable/thumb_red"
+        android:paddingRight="40dp"
+        android:paddingEnd="40dp"
+        android:paddingLeft="40dp"
+        android:paddingStart="40dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <TextView
+        android:id="@+id/steeringText"
+        android:text="50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="4dp"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:textColor="@color/darkgray"
+        android:layout_marginLeft="423dp"
+        android:layout_marginStart="423dp" />
+
+    <!-- Recording buttons -->
+
+    <ImageButton
+        android:id="@+id/pauseButton"
+
+        android:onClick="onPauseClick"
+
+        android:layout_width="73dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+
+        android:src="@drawable/pause"
+        android:background="#00000000"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/pauseButtonDescription"
+        />
+
+    <ImageButton
+        android:id="@+id/playButton"
+
+        android:enabled="false"
+        android:visibility="gone"
+        android:onClick="onPlayClick"
+
+        android:layout_width="73dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+
+        android:src="@drawable/play"
+        android:background="#00000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:contentDescription="@string/playButtonDescription" />
+
+</android.support.constraint.ConstraintLayout>
