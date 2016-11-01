@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="matthewkleinsmith.jetsonremotecontrol"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="24" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <application
+        name="matthewkleinsmith.jetsonremotecontrol.cBaseApplication"
+        android:name="com.android.tools.fd.runtime.BootstrapApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="matthewkleinsmith.jetsonremotecontrol.StartServiceActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="matthewkleinsmith.jetsonremotecontrol.GetDataActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name="matthewkleinsmith.jetsonremotecontrol.UseModelActivity"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>

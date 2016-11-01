@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_use_model"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="matthewkleinsmith.jetsonremotecontrol.UseModelActivity">
+
+    <Button
+        android:id="@+id/button1"
+        android:text="@string/holdToGo"
+        android:background="@drawable/circular_button"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:textSize="28sp"
+        android:paddingTop="20dp">
+    </Button>
+</RelativeLayout>
