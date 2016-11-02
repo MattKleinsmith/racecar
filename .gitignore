@@ -3,3 +3,8 @@ env/
 
 # Vim
 *.swp
+
+# Android Studio
+*.iml
+.idea/
+build/

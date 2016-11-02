@@ -1,1 +1,1 @@
-include ':jetsonremotecontrol-app', ':libs:rosandroid-core'
+include ':app'
