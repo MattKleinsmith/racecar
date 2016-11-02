@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-anydpi-v21/play.xml",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-anydpi-v21/play.xml"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-anydpi-v21/stop.xml",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-anydpi-v21/stop.xml"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-anydpi-v21/forward_arrow_filled_red.xml",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-anydpi-v21/forward_arrow_filled_red.xml"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-anydpi-v21/pause.xml",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-anydpi-v21/pause.xml"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-anydpi-v21/ic_arrow_downward_black_48px.xml",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-anydpi-v21/ic_arrow_downward_black_48px.xml"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-anydpi-v21/forward_arrow_filled_green.xml",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-anydpi-v21/forward_arrow_filled_green.xml"
+    }
+]

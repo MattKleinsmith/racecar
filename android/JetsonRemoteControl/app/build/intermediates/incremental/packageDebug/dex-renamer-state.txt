@@ -1,7 +1,0 @@
-#Sun Oct 23 05:16:36 PDT 2016
-base.0=/home/matthew/code/racecar/android/JetsonRemoteControl/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_b4acc405988152adc156bed89058d29b1a837c76
-renamed.1=classes.dex
-renamed.0=classes2.dex
-file.1=/home/matthew/code/racecar/android/JetsonRemoteControl/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_a7bcdd1c6047de62f71951c55b350112bb10f91e/classes.dex
-base.1=/home/matthew/code/racecar/android/JetsonRemoteControl/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_a7bcdd1c6047de62f71951c55b350112bb10f91e
-file.0=/home/matthew/code/racecar/android/JetsonRemoteControl/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_b4acc405988152adc156bed89058d29b1a837c76/classes.dex

@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JetsonRemoteControl.iml" filepath="$PROJECT_DIR$/JetsonRemoteControl.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jetsonremotecontrol-app/jetsonremotecontrol-app.iml" filepath="$PROJECT_DIR$/jetsonremotecontrol-app/jetsonremotecontrol-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/rosandroid-core/rosandroid-core.iml" filepath="$PROJECT_DIR$/libs/rosandroid-core/rosandroid-core.iml" />
     </modules>
   </component>
 </project>

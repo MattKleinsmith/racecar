@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-ldpi/stop.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-ldpi/stop.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-ldpi/forward_arrow_filled_green.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-ldpi/forward_arrow_filled_green.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-ldpi/ic_arrow_downward_black_48px.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-ldpi/ic_arrow_downward_black_48px.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-ldpi/play.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-ldpi/play.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-ldpi/forward_arrow_filled_red.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-ldpi/forward_arrow_filled_red.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-ldpi/pause.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-ldpi/pause.png"
+    }
+]

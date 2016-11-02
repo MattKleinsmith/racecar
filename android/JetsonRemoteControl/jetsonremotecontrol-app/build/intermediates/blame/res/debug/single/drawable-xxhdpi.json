@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-xxhdpi/forward_arrow_filled_red.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-xxhdpi/forward_arrow_filled_red.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-xxhdpi/stop.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-xxhdpi/stop.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-xxhdpi/play.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-xxhdpi/play.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-xxhdpi/forward_arrow_filled_green.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-xxhdpi/forward_arrow_filled_green.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-xxhdpi/ic_arrow_downward_black_48px.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-xxhdpi/ic_arrow_downward_black_48px.png"
+    },
+    {
+        "merged": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/intermediates/res/merged/debug/drawable-xxhdpi/pause.png",
+        "source": "/home/mwk/code/racecar/android/JetsonRemoteControl/jetsonremotecontrol-app/build/generated/res/pngs/debug/drawable-xxhdpi/pause.png"
+    }
+]
