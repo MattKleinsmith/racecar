@@ -5,9 +5,7 @@ env/
 *.swp
 
 # Android Studio
-*gradle*
-.idea
 *.iml
+.idea/
 build/
-proguard-rules.pro
-local.properties
+.gradle/
