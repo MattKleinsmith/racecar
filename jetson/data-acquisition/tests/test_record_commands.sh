@@ -9,10 +9,22 @@ sudo rfcomm release $port
 sudo rfcomm bind $port $phone $channel
 date +%s%3N > jckl0.txt
 
-echo "aclk,throttle,steering" > commands.csv
-cat $port >> commands.csv &
+#echo "aclk,throttle,steering" > commands.csv
+#cat $port >> commands.csv &
 
 #tail -f /dev/ttyACM0 &
-while true; do
-	tail -f commands.csv | cut -d, -f1- | tee -a arduino.csv /dev/ttyACM0
-done
+#while true; do
+#	tail -f commands.csv | cut -d, -f1- | tee -a arduino.csv /dev/ttyACM0
+#done
+
+file=z.csv
+cat /dev/null > $file
+cat /dev/null > $file.errors
+while read line; do
+  if [ ${#line} == 7 ]; then
+    echo $line >> $file
+  else
+    echo $line >> $file.errors
+  fi
+done < $port
+
