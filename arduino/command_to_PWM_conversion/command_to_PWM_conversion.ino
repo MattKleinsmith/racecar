@@ -81,10 +81,14 @@ double getCommand(int delim, int len, double min_out, double max_out, double neu
       }
     }
   }
+  if (commandIndex != 3) {
+    stopCar("Error: Invalid command. Stopping car.");
+    return neutral;
+  }
   printArray(commandBytes, len); // for debugging
   command = catint(commandBytes, len); // turns {1,2,3} into 123
-  command = enforceBounds(command, MIN_INPUT, MAX_INPUT, neutral); // stops the car if out of bounds
   command = scaleCommand(command, MIN_INPUT, MAX_INPUT, min_out, max_out);
+  command = enforceBounds(command, min_out, max_out, neutral); // stops the car if out of bounds
   Serial.println(command); // for debugging
   return command;
 }
@@ -102,8 +106,7 @@ double catint(int array[], int len) {
 // stops the car if out of bounds
 double enforceBounds(double command, double lowerBound, double upperBound, double neutral) {
   if (command < lowerBound || command > upperBound) {
-    eSpeedControl.write(NEUTRAL_THROTTLE);
-    Serial.println("Error: Command out of bounds. Stopping car.");
+    stopCar("Error: Command out of bounds. Stopping car.");
     command = neutral;
   }
   return command;
@@ -114,9 +117,17 @@ double enforceBounds(double command, double lowerBound, double upperBound, doubl
 double scaleCommand (double command, double min_in, double max_in, double min_out, double max_out) {
   return (command - min_in) * (max_out - min_out) / (max_in - min_in) + min_out;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// safety
+void stopCar(char *errorMsg) {
+    eSpeedControl.write(NEUTRAL_THROTTLE);
+    Serial.println(errorMsg);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
-//debug tools
+// debug tools
 void printArray(int array[], int len) {
   int i;
   for (i = 0; i < len; i++) {
