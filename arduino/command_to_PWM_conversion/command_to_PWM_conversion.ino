@@ -72,9 +72,11 @@ double getCommand(int delim, int len, double min_out, double max_out, double neu
   int commandBytes[len];
   int commandIndex = 0;
   int newByte = 0;
+  Serial.print("Message: ");
   while (newByte != delim) {
     if (Serial.available() > 0) {
       newByte = Serial.read() - OFFSET;
+      Serial.print(newByte);
       if (newByte >= 0 && newByte <= 9) {
         commandBytes[commandIndex] = newByte;
         commandIndex += 1;
@@ -83,12 +85,13 @@ double getCommand(int delim, int len, double min_out, double max_out, double neu
   }
   printArray(commandBytes, len); // for debugging
   if (commandIndex != 3) {
-    stopCar("Error: Invalid command. Stopping car.");
+    stopCar("Error: The command has an invalid length. Stopping car.");
     return neutral;
   }
   command = catint(commandBytes, len); // turns {1,2,3} into 123
   command = scaleCommand(command, MIN_INPUT, MAX_INPUT, min_out, max_out);
   command = enforceBounds(command, min_out, max_out, neutral); // stops the car if out of bounds
+  Serial.print("Scaled command: ");
   Serial.println(command); // for debugging
   return command;
 }
@@ -106,7 +109,7 @@ double catint(int array[], int len) {
 // stops the car if out of bounds
 double enforceBounds(double command, double lowerBound, double upperBound, double neutral) {
   if (command < lowerBound || command > upperBound) {
-    stopCar("Error: Command out of bounds. Stopping car.");
+    stopCar("Error: The command is out of bounds. Stopping car.");
     command = neutral;
   }
   return command;
@@ -131,9 +134,8 @@ void stopCar(char *errorMsg) {
 void printArray(int array[], int len) {
   int i;
   for (i = 0; i < len; i++) {
+    Serial.print("Array: ");
     Serial.print(array[i]);
-    Serial.print(",");
-    Serial.println(i);
   }
 }
 
