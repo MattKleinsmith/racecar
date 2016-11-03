@@ -81,11 +81,11 @@ double getCommand(int delim, int len, double min_out, double max_out, double neu
       }
     }
   }
+  printArray(commandBytes, len); // for debugging
   if (commandIndex != 3) {
     stopCar("Error: Invalid command. Stopping car.");
     return neutral;
   }
-  printArray(commandBytes, len); // for debugging
   command = catint(commandBytes, len); // turns {1,2,3} into 123
   command = scaleCommand(command, MIN_INPUT, MAX_INPUT, min_out, max_out);
   command = enforceBounds(command, min_out, max_out, neutral); // stops the car if out of bounds
