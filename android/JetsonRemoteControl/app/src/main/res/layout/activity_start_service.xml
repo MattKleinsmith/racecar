@@ -60,7 +60,7 @@
         android:id="@+id/getDataButton"
 
         android:text="@string/getData"
-        android:enabled="true"
+        android:enabled="false"
         android:onClick="onGetDataClick"
 
         android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
         android:id="@+id/useModelButton"
 
         android:text="@string/useModel"
-        android:enabled="true"
+        android:enabled="false"
         android:onClick="onUseModelClick"
 
         android:layout_width="wrap_content"

@@ -1,7 +1,6 @@
 package matthewkleinsmith.jetsonremotecontrol;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -32,6 +31,7 @@ public class GetDataActivity extends Activity {
     private ImageButton mReverseButton;
 
     private int mThrottle = throttleNEUTRAL;
+    private int mSteering = steeringNEUTRAL;
 
     private Boolean mLoopCommands;
 
@@ -102,14 +102,15 @@ public class GetDataActivity extends Activity {
                 }
                 if (event.getAction() == MotionEvent.ACTION_MOVE) {
                     mSteeringBar.setThumb(getResources().getDrawable(R.drawable.thumb_green));
-                    mSteeringText.setText(Integer.toString(mSteeringBar.getProgress() + steeringMIN));
+                    mSteering = mSteeringBar.getProgress() + steeringMIN;
+                    mSteeringText.setText(Integer.toString(mSteering));
                 }
                 return false;
             }
         });
 
 
-        // In unlimited speed mode:
+        // In unlimited speed mode: (not the default, button-based throttle mode)
         mThrottleBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -134,12 +135,11 @@ public class GetDataActivity extends Activity {
     }
 
     private void sendCommands() {
-        String time = Long.toString(SystemClock.elapsedRealtime());
-        String throttle = Integer.toString(mThrottle);
-        String steering = Integer.toString(mSteeringBar.getProgress() + steeringMIN);
+        String throttle = String.format("%03d", mThrottle);
+        String steering = String.format("%03d", mSteering);
         String delim1 = ",";
         String delim2 = "\n";
-        byte[] bytes = (time + delim1 + throttle + delim1 + steering + delim2).getBytes();
+        byte[] bytes = (throttle + delim1 + steering + delim2).getBytes();
         try {((cBaseApplication)this.getApplicationContext()).theBluetoothServer.send(bytes);}
         catch (BluetoothServer.BluetoothServerException | IOException e) {e.printStackTrace();}
     }
@@ -158,7 +158,9 @@ public class GetDataActivity extends Activity {
     }
 
     private void resetCommands() {
-        mThrottleBar.setProgress(throttleNEUTRAL);
+        mThrottle = throttleNEUTRAL;
+        mSteering = steeringNEUTRAL;
+        mThrottleBar.setProgress(throttleNEUTRAL); // In unlimited speed mode
         mSteeringBar.setProgress(steeringNEUTRAL - steeringMIN);
     }
 
