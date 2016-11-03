@@ -11,16 +11,6 @@ License of this code:
 	Matthew Kleinsmith (2016)
 */
 
-#include <Servo.h>
-
-// These are general bounds for the steering servo and the
-// TRAXXAS Electronic Speed Controller (ESC)
-const double minThrottle = 0;
-const double neutralThrottle = 91;
-const double maxThrottle = 150;
-const double minSteering = 30; // 60?(25 in)
-const double neutralSteering = 90;
-const double maxSteering = 150; // 132? (85 in)  // Arduino Uno (not micro) and not a fully charged battery
 // Test 1:
 	// Board: Arduino Uno, many years old
 	// Battery: Not fully charged (did two or three laps around the block with it beforehand)
@@ -35,42 +25,53 @@ const double maxSteering = 150; // 132? (85 in)  // Arduino Uno (not micro) and 
 		// Max: 85 (132 out)
 	// Important question: How does the charge of the battery affect the map from commands to actions?
 
+#include <Servo.h>
+
+// input limits
+const double MIN_INPUT = 0; // From serial port (original source is the Android, with the Jetson as an intermediate node)
+const double MAX_INPUT = 100;
+// output limits
+const double MIN_THROTTLE = 0;
+const double MAX_THROTTLE = 150;
+const double MIN_STEERING = 30; // 60?(25 in)
+const double MAX_STEERING = 150; // 132? (85 in)  // Arduino Uno (not micro) and not a fully charged battery
+// neutral values
+const double NEUTRAL_THROTTLE = 91;
+const double NEUTRAL_STEERING = 90;
 // Dealing with ASCII bytes
 const int OFFSET = '0';
 const int COMMA = 44 - OFFSET;
 const int NEWLINE = 10 - OFFSET;
-const int MAXLEN = 3;
-
+const int COMMAND_LEN = 3;
+// Initializations
 Servo eSpeedControl;  // The ESC on the TRAXXAS works like a Servo
 Servo steeringServo;
-
-int newByte = 0;
 double throttle;
 double steering;
 
 void setup() {
   eSpeedControl.attach(10);
-  eSpeedControl.write(neutralThrottle);
+  eSpeedControl.write(NEUTRAL_THROTTLE);
   steeringServo.attach(11);
-  steeringServo.write(neutralSteering);
+  steeringServo.write(NEUTRAL_STEERING);
   Serial.begin(115200);
 }
 
 void loop() {
-  throttle = getCommand(COMMA, MAXLEN, newByte, 0);
-  steering = getCommand(NEWLINE, MAXLEN, newByte, 1);
+  throttle = getCommand(COMMA, COMMAND_LEN, MIN_THROTTLE, MAX_THROTTLE, NEUTRAL_THROTTLE);
+  steering = getCommand(NEWLINE, COMMAND_LEN, MIN_STEERING, MAX_STEERING, NEUTRAL_STEERING);
   eSpeedControl.write(throttle);
   steeringServo.write(steering);
-  printlog(throttle, steering); // for debugging
+  printCommands(throttle, steering); // for debugging
   delay(1);
 }
 
-//////////////////////////////////////////////////////////////////
-double getCommand(int delim, int len, int newByte, int kind) {
-  // @param kind: 0 means throttle; 1 means steering
+////////////////////////////////////////////////////////////////////////////////
+double getCommand(int delim, int len, double min_out, double max_out, double neutral) {
+  double command;
   int commandBytes[len];
-  memset(commandBytes, -1, sizeof commandBytes);
   int commandIndex = 0;
+  int newByte = 0;
   while (newByte != delim) {
     if (Serial.available() > 0) {
       newByte = Serial.read() - OFFSET;
@@ -80,10 +81,12 @@ double getCommand(int delim, int len, int newByte, int kind) {
       }
     }
   }
-  printarray(commandBytes, len); // for debugging
-  double command = catint(commandBytes, len);
+  printArray(commandBytes, len); // for debugging
+  command = catint(commandBytes, len); // turns {1,2,3} into 123
+  command = enforceBounds(command, MIN_INPUT, MAX_INPUT, neutral); // stops the car if out of bounds
+  command = scaleCommand(command, MIN_INPUT, MAX_INPUT, min_out, max_out);
   Serial.println(command); // for debugging
-  return cleanCommand(command, kind);
+  return command;
 }
 
 // turns {1,2,3} into 123
@@ -91,47 +94,30 @@ double catint(int array[], int len) {
   int i = 0;
   double k = 0;
   for (i = 0; i < len; i++) {
-    if (array[i] != -1) { 
-      k = 10 * k + array[i];
-    }
+    k = 10 * k + array[i];
   }
   return k;
 }
 
-// normalize and keep within the interval
-double cleanCommand(double command, int kind) {
-  if (kind == 0) {
-    command = normalizeCommand(command, 0, 100, minThrottle, maxThrottle);
-    Serial.println(command); // for debugging
-    if (command < minThrottle) {
-      command = minThrottle;
-    }
-    if (command > maxThrottle) {
-      command = maxThrottle;
-    }
+// stops the car if out of bounds
+double enforceBounds(double command, double lowerBound, double upperBound, double neutral) {
+  if (command < lowerBound || command > upperBound) {
+    eSpeedControl.write(NEUTRAL_THROTTLE);
+    Serial.println("Error: Command out of bounds. Stopping car.");
+    command = neutral;
   }
-  else {
-    command = normalizeCommand(command, 0, 100, minSteering, maxSteering);
-    Serial.println(command); // for debugging
-    if (command < minSteering) {
-      command = minSteering;
-    }
-    if (command > maxSteering) {
-      command = maxSteering;
-    }
-  }
-  Serial.println(command); // for debugging
   return command;
 }
 
 // stretches or compresses an interval to fit another; think of stretching or compressing a line segment
-double normalizeCommand (double command, double in_min, double in_max, double out_min, double out_max) {
-  return (command - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+// Certain Android UI limitations determined the input interval. Arduino servos determined the output interval.
+double scaleCommand (double command, double min_in, double max_in, double min_out, double max_out) {
+  return (command - min_in) * (max_out - min_out) / (max_in - min_in) + min_out;
 }
-//////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-//debug tool
-void printarray(int array[], int len) {
+//debug tools
+void printArray(int array[], int len) {
   int i;
   for (i = 0; i < len; i++) {
     Serial.print(array[i]);
@@ -140,7 +126,7 @@ void printarray(int array[], int len) {
   }
 }
 
-void printlog(double throttle, double steering){
+void printCommands(double throttle, double steering){
   Serial.print("Throttle: ");
   Serial.println(throttle);
   Serial.print("Steering: ");
