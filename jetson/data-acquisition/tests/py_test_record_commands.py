@@ -1,5 +1,6 @@
 import os
 import re
+import time
 import thread
 
 from plumbum.cmd import sdptool, rfcomm, sudo
@@ -9,6 +10,7 @@ import serial
 def readThread(inPort, outPort, outFile, outError):
   while True:   
     line = inPort.readline()
+    mstime = str(time.time() * 1000)
     if len(line) == 7: # Valid format: '000,000'
       print >> outPort, line
       print >> outFile, mstime + "," + line
@@ -17,7 +19,7 @@ def readThread(inPort, outPort, outFile, outError):
 
 phone = os.environ['phone']
 bluetooth = '/dev/rfcomm0' # Connected to Android
-services = sdptool['browse', '--l2cap', phone]()
+services = sdptool['browse', phone]()
 jetsonRemoteControlService = services.split('Jetson Remote Control')[-1]
 regex = re.compile('Channel: ([0-9]+)')
 channel = regex.search(jetsonRemoteControlService).group(1)

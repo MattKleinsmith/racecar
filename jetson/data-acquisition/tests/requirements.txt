@@ -3,3 +3,6 @@ pandas==0.19.0
 python-dateutil==2.5.3
 pytz==2016.7
 six==1.10.0
+plumbum==1.6.2
+pyserial==3.2.1
+
