@@ -1,5 +1,5 @@
 bluetooth=/dev/rfcomm0 # Connected to Android
-usb=/dev/ttyACM0 # Connected to Arduino
+usb=/dev/ttyACM1 # Connected to Arduino
 cmd_log=commands.csv
 
 if [ "$#" -eq 1 ]; then 
@@ -12,13 +12,15 @@ sudo rfcomm release $bluetooth
 sudo rfcomm bind $bluetooth $phone $channel
 
 cat /dev/null > $cmd_log
-cat /dev/null > $cmd_log.errors
+cat /dev/null > $cmd_log.log
+cat /dev/null > $cmd_log.error
 #echo "aclk,throttle,steering" > $cmd_log
 while read line; do
   if [ ${#line} == 7 ]; then
-    echo $line >> $usb
-    echo `date +%s%3N`,$line >> $cmd_log
+    #echo $line >> $usb
+    echo $line >> $cmd_log
+    echo `date +%s%3N`,$line >> $cmd_log.log
   else
-    echo `date +%s%3N`,$line >> $cmd_log.errors
+    echo `date +%s%3N`,$line >> $cmd_log.error
   fi
 done < $bluetooth

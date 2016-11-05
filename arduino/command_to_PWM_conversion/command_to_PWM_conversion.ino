@@ -39,15 +39,17 @@ const double MAX_STEERING = 150; // 132? (85 in)  // Arduino Uno (not micro) and
 const double NEUTRAL_THROTTLE = 91;
 const double NEUTRAL_STEERING = 90;
 // Dealing with ASCII bytes
-const int OFFSET = '0';
-const int COMMA = 44 - OFFSET;
-const int NEWLINE = 10 - OFFSET;
+const int OFFSET = '0'; // 48
+const int COMMA = 44 - OFFSET; // -4
+const int NEWLINE = 10 - OFFSET; // -38
 const int COMMAND_LEN = 3;
 // Initializations
 Servo eSpeedControl;  // The ESC on the TRAXXAS works like a Servo
 Servo steeringServo;
 double throttle;
 double steering;
+
+double counter;
 
 void setup() {
   eSpeedControl.attach(10);
@@ -58,12 +60,20 @@ void setup() {
 }
 
 void loop() {
+  Serial.println("~");
+  Serial.println("########READY TO RECEIVE A PAIR OF COMMANDS");
+  Serial.print("####COUNTER: ");
+  Serial.println(counter);
+  counter += 1;
+  Serial.println("##GETTING THROTTLE COMMAND");
   throttle = getCommand(COMMA, COMMAND_LEN, MIN_THROTTLE, MAX_THROTTLE, NEUTRAL_THROTTLE);
+  Serial.println("##GETTING STEERING COMMAND");
   steering = getCommand(NEWLINE, COMMAND_LEN, MIN_STEERING, MAX_STEERING, NEUTRAL_STEERING);
   eSpeedControl.write(throttle);
   steeringServo.write(steering);
+  Serial.println("##RESULTS:");
   printCommands(throttle, steering); // for debugging
-  delay(1);
+  //delay(1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,20 +82,33 @@ double getCommand(int delim, int len, double min_out, double max_out, double neu
   int commandBytes[len];
   int commandIndex = 0;
   int newByte = 0;
+  int msglen = 0;
   Serial.print("Message: ");
   while (newByte != delim) {
     if (Serial.available() > 0) {
       newByte = Serial.read() - OFFSET;
       Serial.print(newByte);
-      if (newByte >= 0 && newByte <= 9) {
+      Serial.print(" ");
+      if (newByte >= 0 && newByte <= 9 && commandIndex < 3) {
         commandBytes[commandIndex] = newByte;
         commandIndex += 1;
       }
+      msglen += 1;
     }
+    //else {
+     // Serial.print("~");
+    //}
   }
+  Serial.println();
+  Serial.print("The byte that ended the while loop: ");
+  Serial.println(newByte);
   printArray(commandBytes, len); // for debugging
-  if (commandIndex != 3) {
-    stopCar("Error: The command has an invalid length. Stopping car.");
+  if (msglen != 4) {
+    Serial.print("Message length: ");
+    Serial.println(msglen);
+    stopCar("Error: The message has an invalid length. Stopping car.");
+    Serial.print("Returning neutral: ");
+    Serial.println(neutral);
     return neutral;
   }
   command = catint(commandBytes, len); // turns {1,2,3} into 123
@@ -132,11 +155,13 @@ void stopCar(char *errorMsg) {
 
 // debug tools
 void printArray(int array[], int len) {
+  Serial.print("Array: ");
   int i;
   for (i = 0; i < len; i++) {
-    Serial.print("Array: ");
     Serial.print(array[i]);
+    Serial.print(" ");
   }
+  Serial.println();
 }
 
 void printCommands(double throttle, double steering){
