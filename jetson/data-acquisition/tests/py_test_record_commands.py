@@ -1,5 +1,6 @@
 import pdb
 import sys
+import subprocess
 
 class ForkedPdb(pdb.Pdb):
   """A Pdb subclass that may be used
@@ -15,22 +16,22 @@ class ForkedPdb(pdb.Pdb):
 
 import os
 import re
-import time
-from multiprocessing import Process, Queue
+from time import time
+from multiprocessing import Process, Pipe
 
 from plumbum.cmd import sdptool, sudo, rfcomm
 from serial import Serial, SerialException
 
 
-def saveCommands(bluetooth, queue, cmdWrite, cmdLog, cmdErr):
+def saveCommands(bluetooth, pipeIn, cmdWrite, cmdLog, cmdErr):
   print "Starting saveCommandsP"
   try:
     while True: 
       msg = bluetooth.read(8)
       if msg:
-        mstime = str(int(time.time() * 1000))
+        mstime = str(int(time() * 1000))
         if msg[-1] == '\n': # Valid format: '000,000\n'
-          queue.put(msg)
+          pipeIn.send(msg)
           cmdWrite.write(msg)
           cmdLog.write(mstime + "," + msg)
         else:
@@ -49,26 +50,19 @@ def saveCommands(bluetooth, queue, cmdWrite, cmdLog, cmdErr):
     cmdErr.close()
     print "cmdErr closed\n"
 
-def sendCommands(usb, handshake, queue, sendCommandsLog):
+def sendCommands(pipeOut, usb, handshake, endCommandsLog):
   print "Starting sendCommandsP\n"
-  print "6"
-  print queue
   try:
     freePass = True
     while True:
-      cmd = queue.get()
-      print "7"
-      print queue
+      cmd = pipeOut.recv()
       msg = usb.read(1)
-      print queue
-      print msg
-      sendCommandsLog.write(msg)
-      if (msg and msg == handshake) or freePass:
-        print "###########queue: "
-        print queue
-        print "###########"
-        sendCommandsLog.write("GOT HERE2\n")
-        sendCommandsLog.write("cmd len: " + str(len(cmd)) + "\n")
+      #print msg
+      #sendCommandsLog.write(msg)
+      #if (msg and msg == handshake) or freePass:
+      if True:
+        #sendCommandsLog.write("GOT HERE2\n")
+        #sendCommandsLog.write("cmd len: " + str(len(cmd)) + "\n")
         sendCommandsLog.write(cmd)
         if len(cmd) == 8 and cmd[-1] == '\n':
           usb.write(cmd)
@@ -107,27 +101,20 @@ if __name__ == '__main__':
 
   #---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#
 
-  queue = Queue()
+  pipeIn, pipeOut = Pipe()
 
-  saveCommandsArgs = (bluetooth, queue, cmdWrite, cmdLog, cmdErr)
+  saveCommandsArgs = (bluetooth, pipeIn, cmdWrite, cmdLog, cmdErr)
   saveCommandsP = Process(target=saveCommands, args=saveCommandsArgs)
   saveCommandsP.start()
-  print "1"
-  print queue
-  sendCommandsArgs = (usb, queue, handshake, sendCommandsLog)
+    
+  sendCommandsArgs = (pipeOut, usb, handshake, sendCommandsLog)
   sendCommandsP = Process(target=sendCommands, args=sendCommandsArgs) 
-  print "2"
-  print queue
   sendCommandsP.start() 
-  print "3"
-  print queue
-
+    
   try:
     saveCommandsP.join()
-    print "4"
-    print queue
     sendCommandsP.join()
-    print "5"
-    print queue
   except (KeyboardInterrupt, SerialException) as error:
     print "\nError in Main\n"
+  finally:
+    subprocess.call(['./ratioMsCmd.sh'])
