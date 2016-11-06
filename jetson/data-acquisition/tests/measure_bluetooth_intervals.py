@@ -8,13 +8,13 @@ def rm_dup(seq):
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
 
-d = pd.read_csv(sys.argv[1])
-#d = d[~d.aclk.str.contains("")]
-d.aclk = pd.to_numeric(d.aclk, downcast='unsigned')
-aclk0 = d.aclk[0]
-d.aclk = d.aclk - aclk0
-d['tmp'] = d.aclk.shift()
-d['diff'] = d.aclk - d.tmp
+d = pd.read_csv(sys.argv[1], header=None)
+#d = d[~d[0].str.contains("")]
+d[0] = pd.to_numeric(d[0], downcast='unsigned')
+jclk0 = d[0][0]
+d[0] = d[0] - jclk0
+d['tmp'] = d[0].shift()
+d['diff'] = d[0] - d.tmp
 
 #sample = d['diff'].sample(10000)
 sample = d['diff']
