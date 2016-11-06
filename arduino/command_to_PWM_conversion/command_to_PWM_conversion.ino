@@ -60,62 +60,62 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("~");
-  Serial.println("########READY TO RECEIVE A PAIR OF COMMANDS");
-  Serial.print("####COUNTER: ");
-  Serial.println(counter);
-  counter += 1;
-  Serial.println("##GETTING THROTTLE COMMAND");
+  //Serial.println("~");
+  //Serial.println("########READY TO RECEIVE A PAIR OF COMMANDS");
+  //Serial.print("####COUNTER: ");
+  //Serial.println(counter);
+  //counter += 1;
+  //Serial.println("##GETTING THROTTLE COMMAND");
   throttle = getCommand(COMMA, COMMAND_LEN, MIN_THROTTLE, MAX_THROTTLE, NEUTRAL_THROTTLE);
-  Serial.println("##GETTING STEERING COMMAND");
+  //Serial.println("##GETTING STEERING COMMAND");
   steering = getCommand(NEWLINE, COMMAND_LEN, MIN_STEERING, MAX_STEERING, NEUTRAL_STEERING);
   eSpeedControl.write(throttle);
   steeringServo.write(steering);
-  Serial.println("##RESULTS:");
-  printCommands(throttle, steering); // for debugging
+  //Serial.println("##RESULTS:");
+  //printCommands(throttle, steering); // for debugging
   //delay(1);
+  Serial.println();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 double getCommand(int delim, int len, double min_out, double max_out, double neutral) {
   double command;
   int commandBytes[len];
-  int commandIndex = 0;
   int newByte = 0;
-  int msglen = 0;
-  Serial.print("Message: ");
+  int bytesSeen = 0;
+  //Serial.print("Message: ");
   while (newByte != delim) {
     if (Serial.available() > 0) {
       newByte = Serial.read() - OFFSET;
       Serial.print(newByte);
       Serial.print(" ");
-      if (newByte >= 0 && newByte <= 9 && commandIndex < 3) {
-        commandBytes[commandIndex] = newByte;
-        commandIndex += 1;
+      if (newByte >= 0 && newByte <= 9 && bytesSeen < 3) {
+        commandBytes[bytesSeen] = newByte;
       }
-      msglen += 1;
+      bytesSeen += 1;
     }
     //else {
      // Serial.print("~");
     //}
   }
-  Serial.println();
-  Serial.print("The byte that ended the while loop: ");
-  Serial.println(newByte);
-  printArray(commandBytes, len); // for debugging
-  if (msglen != 4) {
-    Serial.print("Message length: ");
-    Serial.println(msglen);
-    stopCar("Error: The message has an invalid length. Stopping car.");
-    Serial.print("Returning neutral: ");
-    Serial.println(neutral);
+  //Serial.println();
+  //Serial.print("The byte that ended the while loop: ");
+  //Serial.println(newByte);
+  //printArray(commandBytes, len); // for debugging
+  if (bytesSeen != 4) { // Valid byte format is "###," or "###\n"
+    //Serial.print("Message length: ");
+    //Serial.println(msglen);
+    //stopCar("Error: The message has an invalid length. Stopping car.");
+    stopCar();
+    //Serial.print("Returning neutral: ");
+    //Serial.println(neutral);
     return neutral;
   }
   command = catint(commandBytes, len); // turns {1,2,3} into 123
   command = scaleCommand(command, MIN_INPUT, MAX_INPUT, min_out, max_out);
   command = enforceBounds(command, min_out, max_out, neutral); // stops the car if out of bounds
-  Serial.print("Scaled command: ");
-  Serial.println(command); // for debugging
+  //Serial.print("Scaled command: ");
+  //Serial.println(command); // for debugging
   return command;
 }
 
@@ -132,7 +132,8 @@ double catint(int array[], int len) {
 // stops the car if out of bounds
 double enforceBounds(double command, double lowerBound, double upperBound, double neutral) {
   if (command < lowerBound || command > upperBound) {
-    stopCar("Error: The command is out of bounds. Stopping car.");
+    stopCar();
+    //stopCar("Error: The command is out of bounds. Stopping car.");
     command = neutral;
   }
   return command;
@@ -146,13 +147,13 @@ double scaleCommand (double command, double min_in, double max_in, double min_ou
 
 ////////////////////////////////////////////////////////////////////////////////
 // safety
-void stopCar(char *errorMsg) {
+void stopCar() {
     eSpeedControl.write(NEUTRAL_THROTTLE);
-    Serial.println(errorMsg);
+    //Serial.println(errorMsg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
+/*
 // debug tools
 void printArray(int array[], int len) {
   Serial.print("Array: ");
@@ -172,4 +173,4 @@ void printCommands(double throttle, double steering){
   Serial.println();
 }
 
-
+*/
