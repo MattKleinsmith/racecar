@@ -6,23 +6,34 @@
 # This repository
 # git clone https://github.com/jetsonhacks/installJetsonCar.git
 
+# The original code was for the Jetson TK1, which is on Ubuntu 14.04.
+# This code is for Jetson TX1, which is on Ubuntu 16.04.
+
+cd ../..
+repo=$PWD
+arduino=$repo/arduino
+jetsonhacks=$repo/jetsonhacks
+
 # Make the jetsonbot catkin workspace
 ./setupCatkinWorkspace.sh jetsoncar
-cd ~/jetsoncar
+cd $jetsonhacks/jetsoncar
 sudo apt-get install arduino
-sudo apt-get install ros-indigo-joy -y
+sudo apt-get install ros-kinetic-joy -y
 cd src
-git clone https://github.com/jetsonhacks/jetsoncar_teleop.git
+cp -r $jetsonhacks/jetsoncar_teleop jetsoncar_teleop
+#git clone https://github.com/jetsonhacks/jetsoncar_teleop.git
 cd ..
 catkin_make
 
 # Copy Arduino code 
-cd ~/installJetsonCar
-cp -r Arduino\ Firmware/* '/home/ubuntu/sketchbook'
-sudo apt-get install ros-indigo-rosserial-arduino ros-indigo-rosserial ros-indigo-angles -y
+cd $jetsonhacks/installJetsonCar
+cp -r Arduino\ Firmware/* $arduino 
+sudo apt-get install ros-kinetic-rosserial-arduino ros-kinetic-rosserial ros-kinetic-angles -y
 cd ~/sketchbook/libraries
 rm -rf ros_lib
-source ~/jetsoncar/devel/setup.bash
+source $jetsonhacks/jetsoncar/devel/setup.bash
+# The following raises an error about tf messages. This is unimportant for this
+# application. The error is likely related to switching from indigo to kinetic.
 rosrun rosserial_arduino make_libraries.py ~/sketchbook/libraries
-cd ~/installJetsonCar
+cd $origWD
 

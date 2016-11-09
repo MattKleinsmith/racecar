@@ -196,10 +196,15 @@ void JetsonCarTeleop::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     }
 
     if (rightPressed == true) {
-        // set to the minimum
-        vel.linear.x=0.54 ;
+        // set to the minimum forward
+        vel.linear.x=0.559 ;
     } else {
         vel.linear.x = ((1-(0.5+vel.linear.x))/2)+0.5 ; // throttle is mapped from 0.5 to 1.0 (0.5 is idle) positive is forward
+    }
+
+    if (leftPressed == true) {
+        // set to the minimum backward
+        vel.linear.x=0.488 ;
     }
 
     last_published_ = vel;
