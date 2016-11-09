@@ -1,3 +1,6 @@
+"""
+The Arduino receives the commands as I send them from the Android, for a while, and then delays and jitters start to happen, and eventually the Arduino stops receiving commands.
+"""
 import pdb
 import sys
 import subprocess
@@ -88,7 +91,7 @@ if __name__ == '__main__':
     jetsonRemoteControlService = services.split('Jetson Remote Control')[-1]
     regex = re.compile('Channel: ([0-9]+)')
     channel = regex.search(jetsonRemoteControlService).group(1)
-    rfcommPort = '/dev/rfcomm0' # Connected to Android
+    rfcommPort = os.environ['bluetooth'] # Connected to Android: e.g. /dev/rfcomm0
     sudo[rfcomm['release', rfcommPort]]()
     sudo[rfcomm['bind', rfcommPort, phone, channel]]()
     bluetooth = Serial(rfcommPort, 921600) # Connected to Android
@@ -96,7 +99,8 @@ if __name__ == '__main__':
     cmdWrite = open(cmdFilename, 'w')
     cmdLog = open(cmdFilename + '.log', 'w')
     cmdErr = open(cmdFilename + '.error', 'w')
-    usb = Serial('/dev/ttyACM1', 115200) # Connected to Arduino
+    usbName = os.environ['usb'] # Connected to Arduino: e.g. /dev/ttyACM2
+    usb = Serial(usbName, 115200)
     usb.close()
     usb.open()
     handshake = "~"
