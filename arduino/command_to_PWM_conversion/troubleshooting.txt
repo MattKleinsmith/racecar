@@ -1,1 +1,0 @@
-The Arduino couldn't receive the Jetson's message until I set the baudrate to 115200 from the Arduino IDE Serial Monitor.
