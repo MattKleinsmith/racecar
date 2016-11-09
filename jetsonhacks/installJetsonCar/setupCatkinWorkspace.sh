@@ -1,7 +1,7 @@
 #!/bin/sh
 # Create a Catkin Workspace and setup ROS environment variables
 # Usage setupCatkinWorkspace.sh dirName
-DEFAULTDIR=~/catkin_ws
+DEFAULTDIR="~/catkin_workspaces/catkin_workspace_$(date +%s)"
 CLDIR="$1"
 if [ ! -z "$CLDIR" ]; then 
  DEFAULTDIR="$CLDIR"
