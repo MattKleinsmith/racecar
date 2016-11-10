@@ -31,7 +31,11 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         csvPath = sys.argv[1]
     else:
-        csvPath = os.environ['usbDrive'] + '/' + 'commands.csv'
+        with open(os.environ['cameraDatetime']) as datetimeFile:
+            datetime = datetimeFile.readline().strip() 
+        csvPath = os.environ['usbDrive'] + '/' + datetime + '_commands.csv'
+        if os.path.isfile(csvPath):
+            raise IOError('The csv already exists. Restart the camera node.')
     with open(csvPath, 'w') as csv:
         listener(csv)
 
