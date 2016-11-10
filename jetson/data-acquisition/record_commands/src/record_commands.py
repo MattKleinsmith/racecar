@@ -20,7 +20,7 @@ def callback(data, args):
     steering = data.axes[0] 
     csv = args[0]
     stamp = '{0:.6f}'.format(stamp)
-    print >> csv, str(data.header.seq) + ',' + stamp + ',' + str(throttle) + ',' + str(steering)
+    print >> csv, stamp + ',' + str(throttle) + ',' + str(steering)
 
 def listener(csv):
     rospy.init_node('record_commands')
