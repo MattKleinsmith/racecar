@@ -1,22 +1,22 @@
 #!/bin/sh
 # Create a Catkin Workspace and setup ROS environment variables
 # Usage setupCatkinWorkspace.sh dirName
-DEFAULTDIR="~/catkin_workspaces/catkin_workspace_$(date +%s)"
-CLDIR="$1"
-if [ ! -z "$CLDIR" ]; then 
- DEFAULTDIR="$CLDIR"
+CATKIN_DIR="$~/catkin_workspaces/catkin_workspace_$(date +%s)"
+CUSTOM_DIR="$1"
+if [ ! -z "$CUSTOM_DIR" ]; then 
+ CATKIN_DIR="$CUSTOM_DIR"
 fi
-if [ -e "$DEFAULTDIR" ] ; then
-  echo "$DEFAULTDIR already exists; no action taken" 
+if [ -e "$CATKIN_DIR" ] ; then
+  echo "$CATKIN_DIR already exists; no action taken" 
   exit 1
 else 
-  echo "Creating Catkin Workspace: $DEFAULTDIR"
+  echo "Creating Catkin Workspace: $CATKIN_DIR"
 fi
-echo "$DEFAULTDIR"/src
-mkdir -p "$DEFAULTDIR"/src
-cd "$DEFAULTDIR"/src
+echo "$CATKIN_DIR"/src
+mkdir -p "$CATKIN_DIR"/src
+cd "$CATKIN_DIR"/src
 catkin_init_workspace
-cd "$DEFAULTDIR"
+cd "$CATKIN_DIR"
 catkin_make
 
 

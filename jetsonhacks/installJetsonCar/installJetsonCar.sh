@@ -15,12 +15,12 @@ repo=$PWD
 jetsonhacks=$repo/jetsonhacks
 installJetsonCar=$jetsonhacks/installJetsonCar
 jetsoncar_teleop=$jetsonhacks/jetsoncar_teleop
-jetsoncar=~/catkin_workspaces/jetsoncar
+racecarCatkin=~/catkin_workspaces/racecar
 arduino=~/sketchbook/
 
 # Make the jetsonbot catkin workspace
-$installJetsonCar/setupCatkinWorkspace.sh $jetsoncar
-cd $jetsoncar
+$installJetsonCar/setupCatkinWorkspace.sh $racecarCatkin
+cd $racecarCatkin
 sudo apt-get install arduino
 sudo apt-get install ros-kinetic-joy -y
 cd src
@@ -35,9 +35,8 @@ cp -r Arduino\ Firmware/* $arduino
 sudo apt-get install ros-kinetic-rosserial-arduino ros-kinetic-rosserial ros-kinetic-angles -y
 cd ~/sketchbook/libraries
 rm -rf ros_lib
-source $jetsoncar/devel/setup.bash
+source $racecarCatkin/devel/setup.bash
 # The following raises an error about tf messages. This is unimportant for this
 # application. The error is likely related to switching from indigo to kinetic.
 rosrun rosserial_arduino make_libraries.py ~/sketchbook/libraries
 cd $installJetsonCar
-
