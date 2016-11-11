@@ -1,14 +1,8 @@
 /*
-License of original code:
   Arduino ROS node for JetsonCar project
   The Arduino controls a TRAXXAS Rally Car
   MIT License
   JetsonHacks (2016)
-Link to original code:
-       https://github.com/jetsonhacks/installJetsonCar/blob/master/Arduino%20Firmware/jetsoncar/jetsoncar.ino
-License of this code:
-       MIT License
-       Matthew Kleinsmith (2016)
 */
 
 #if defined(ARDUINO) && ARDUINO >= 100
@@ -62,7 +56,12 @@ void driveCallback ( const geometry_msgs::Twist&  twistMsg )
   steeringServo.write(steeringAngle) ;
   
   // ESC forward is between 0.5 and 1.0
-  int escCommand = fmap(twistMsg.linear.z, 0.0, 1.0, minThrottle, maxThrottle) ;
+  int escCommand ;
+  if (twistMsg.linear.x >= 0.5) {
+    escCommand = (int)fmap(twistMsg.linear.x, 0.5, 1.0, 90.0, maxThrottle) ;
+  } else {
+    escCommand = (int)fmap(twistMsg.linear.x, 0.0, 1.0, 0.0, 180.0) ;
+  }
   // Check to make sure throttle command is within bounds
   if (escCommand < minThrottle) { 
     escCommand = minThrottle;
@@ -91,7 +90,7 @@ void setup(){
   nodeHandle.subscribe(driveSubscriber) ;
   // Attach the servos to actual pins
   steeringServo.attach(9); // Steering servo is attached to pin 9
-  electronicSpeedController.attach(11); // ESC is on pin 10
+  electronicSpeedController.attach(11); // ESC is on pin 11
   // Initialize Steering and ESC setting
   // Steering centered is 90, throttle at neutral is 90
   steeringServo.write(90) ;
