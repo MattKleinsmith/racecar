@@ -91,7 +91,7 @@ void setup(){
   nodeHandle.subscribe(driveSubscriber) ;
   // Attach the servos to actual pins
   steeringServo.attach(9); // Steering servo is attached to pin 9
-  electronicSpeedController.attach(10); // ESC is on pin 10
+  electronicSpeedController.attach(11); // ESC is on pin 10
   // Initialize Steering and ESC setting
   // Steering centered is 90, throttle at neutral is 90
   steeringServo.write(90) ;
