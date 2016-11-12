@@ -1,23 +1,35 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Run this script from ~/.../racecar/jetson/data-acquisition
 
 # Run master node
-roscore &
+tmux new -d -s core 'roscore'
+sleep 1
 # Run Arduino node
-rosrun rosserial_python serial_node.py $usb &
+tmux new -d -s ino 'rosrun rosserial_python serial_node.py $usb'
 # Run raw joy node and processed joy node
-roslaunch jetsoncar_teleop nyko_teleop.launch &
+tmux new -d -s joy 'roslaunch jetsoncar_teleop nyko_teleop.launch'
 # Start camera
-./record_images.sh &
-record_images_PID=$!
+tmux new -d -s cam './record_images.sh'
 # Run a node to record the raw joy topic
-rosrun record_commands record_commands.py &
-record_commands_PID=$!
+tmux new -d -s cmd 'rosrun record_commands record_commands.py'
 
-function stop_recording {
-    kill -SIGINT record_images_PID
-    kill -SIGINT record_commands_PID
+tmux ls
+
+function stopRecording {
+	echo
+    tmux send -t cam '^C' ENTER
+	tmux send -t cmd '^C' ENTER
+    sleep 1 
+    tmux ls
 }
 
-trap stop_recording SIGINT
+function listenForSIGINT {
+    while true; do
+        sleep 3600
+    done
+}
+
+trap stopRecording SIGINT
+listenForSIGINT &
+wait $! # This waits for listenForSIGINT to finish
