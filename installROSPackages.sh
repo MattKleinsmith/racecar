@@ -15,19 +15,16 @@ sudo apt-get install -y \
 repo=$PWD
 jetsonhacks=$repo/jetsonhacks
 installJetsonCar=$jetsonhacks/installJetsonCar
+dataAcquisition=$repo/jetson/data_acquisition
 
 # Make a catkin workspace for this project
 racecarCatkin=~/catkin_workspaces/racecar
 $installJetsonCar/setupCatkinWorkspace.sh $racecarCatkin
 cd $racecarCatkin
 
-# Install the jetsoncar_teleop ROS package (custom)
-jetsoncar_teleop=$jetsonhacks/jetsoncar_teleop
-cp -r $jetsoncar_teleop src
-
-# Install the record_commands ROS package (custom)
-record_commands=$repo/jetson/data-acquisition/record_commands
-cp -r $record_commands src
+# Install the bluetooth ROS package (custom)
+bluetooth=$dataAcquisition/bluetooth
+cp -r $bluetooth src
 
 # Make the custom ROS packages
 catkin_make
