@@ -33,6 +33,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <fstream>
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
