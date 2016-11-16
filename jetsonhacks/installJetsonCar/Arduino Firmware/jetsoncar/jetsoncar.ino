@@ -25,15 +25,15 @@ ros::NodeHandle nodeHandle;
 // TRAXXAS Electronic Speed Controller (ESC)
 const int MIN_THROTTLE_OUTPUT = 0;
 const int MAX_THROTTLE_OUTPUT = 150;
-const int MIN_STEERING_OUTPUT = 60;
-const int MAX_STEERING_OUTPUT = 132;
+const int MIN_STEERING_OUTPUT = 1083;//60;
+const int MAX_STEERING_OUTPUT = 1958;//132;
 const int BAUDRATE = 115200;
 const int MIN_THROTTLE_INPUT = 0;
 const int MAX_THROTTLE_INPUT = 100;
 const int MIN_STEERING_INPUT = 0;
 const int MAX_STEERING_INPUT = 600;
 const int NEUTRAL_THROTTLE = 91;
-const int NEUTRAL_STEERING = 90;
+const int NEUTRAL_STEERING = 1500; // TODO: Find true neutral.
 const int LED = 13;
 const int SETUP_DELAY = 1000;
 const int SPIN_DELAY = 1;
@@ -70,7 +70,7 @@ void driveCallback ( const geometry_msgs::Twist&  twistMsg )
   if (steeringAngle > MAX_STEERING_OUTPUT) {
     steeringAngle = MAX_STEERING_OUTPUT;
   }
-  steeringServo.write(steeringAngle);
+  steeringServo.writeMicroseconds(steeringAngle);
   
   int escCommand = fmap(twistMsg.linear.x, MIN_THROTTLE_INPUT, MAX_THROTTLE_INPUT, MIN_THROTTLE_OUTPUT, MAX_THROTTLE_OUTPUT);
   // Check to make sure throttle command is within bounds
@@ -112,5 +112,5 @@ void setup(){
 
 void loop(){
   nodeHandle.spinOnce();
-  delay(SPIN_DELAY);
+  delay(SPIN_DELAY); // Remove this to get to new messages faster?
 }
