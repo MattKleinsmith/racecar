@@ -60,7 +60,8 @@ if __name__ == '__main__':
     sudo[rfcomm['bind', bluetoothDevice, phone, channel]]()
     bluetooth = Serial(bluetoothDevice, 921600) # Connected to Android
     usbDrive = os.environ['usbDrive']
-    cmdFilename = usbDrive + '/commands.csv'
-    cmdLog = open(cmdFilename + '.log', 'w')
+    with open(os.environ['cameraDatetime']) as f: camDt = f.readline().strip()
+    cmdFilename = usbDrive + '/' + camDt + '_commands.csv'
+    cmdLog = open(cmdFilename, 'w')
     cmdErr = open(cmdFilename + '.error', 'w')
     talker(bluetooth, cmdLog, cmdErr)

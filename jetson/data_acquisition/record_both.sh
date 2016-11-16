@@ -2,32 +2,26 @@
 
 # Run this script from ~/.../racecar/jetson/data-acquisition
 
+./setupRFCOMMport.sh
 # Run master node
 tmux new -d -s core 'roscore'
 sleep 1
 # Start camera
 tmux new -d -s cam './record_images.sh'
-# Run Bluetooth node 
-tmux new -d -s cmd 'rosrun record_commands record_commands.py'
+# Run command regulator node
+tmux new -d -s relay 'rosrun bluetoothcpp bluetoothNode'
 # Run Arduino node
 tmux new -d -s ino 'rosrun rosserial_python serial_node.py $usb'
 
 tmux ls
 
 function stopRecording {
-	echo
+	echo "\nStopping camera"
     tmux send -t cam '^C' ENTER
-	tmux send -t cmd '^C' ENTER
     sleep 1 
     tmux ls
 }
 
-function listenForSIGINT {
-    while true; do
-        sleep 3600
-    done
-}
-
 trap stopRecording SIGINT
-listenForSIGINT &
-wait $! # This waits for listenForSIGINT to finish
+
+rosrun bluetooth bluetooth.py
