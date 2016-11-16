@@ -93,9 +93,9 @@ public class GetDataActivity extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    mSteering = steeringNEUTRAL;
                     mSteeringBar.setThumb(getResources().getDrawable(R.drawable.thumb_red));
                     mSteeringBar.setProgress(steeringNEUTRAL);
-                    mSteering = steeringNEUTRAL;
                     mSteeringText.setText(Integer.toString(steeringNEUTRAL));
                     return true;
                 }

@@ -93,7 +93,7 @@
         android:id="@+id/steeringBarBackground"
         android:src="@drawable/progress_fill"
         android:layout_height="12dp"
-        android:layout_width="234dp"
+        android:layout_width="324dp"
         android:layout_marginLeft="305dp"
         android:layout_marginStart="305dp"
         app:layout_constraintLeft_toLeftOf="parent"

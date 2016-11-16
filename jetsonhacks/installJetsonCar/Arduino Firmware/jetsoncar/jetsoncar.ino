@@ -23,14 +23,15 @@
 ros::NodeHandle nodeHandle;
 // These are general bounds for the steering servo and the
 // TRAXXAS Electronic Speed Controller (ESC)
-const int minSteering = 30;
-const int maxSteering = 150;
-const int minThrottle = 0;
-const int maxThrottle = 150;
-
+const int MIN_THROTTLE_OUTPUT = 0;
+const int MAX_THROTTLE_OUTPUT = 150;
+const int MIN_STEERING_OUTPUT = 60;
+const int MAX_STEERING_OUTPUT = 132;
 const int BAUDRATE = 115200;
-const int MAX_INPUT = 0;
-const int MAX_OUTPUT = 100;
+const int MIN_THROTTLE_INPUT = 0;
+const int MAX_THROTTLE_INPUT = 100;
+const int MIN_STEERING_INPUT = 0;
+const int MAX_STEERING_INPUT = 600;
 const int NEUTRAL_THROTTLE = 91;
 const int NEUTRAL_STEERING = 90;
 const int LED = 13;
@@ -55,7 +56,7 @@ double fmap (double toMap, double in_min, double in_max, double out_min, double 
 void driveCallback ( const geometry_msgs::Twist&  twistMsg )
 {
   
-  int steeringAngle = fmap(twistMsg.angular.z, MAX_INPUT, MAX_OUTPUT, minSteering, maxSteering);
+  int steeringAngle = fmap(twistMsg.angular.z, MIN_STEERING_INPUT, MAX_STEERING_INPUT, MIN_STEERING_OUTPUT, MAX_STEERING_OUTPUT);
   // The following could be useful for debugging
   int title = -1;
   str_msg.data = title;
@@ -63,18 +64,18 @@ void driveCallback ( const geometry_msgs::Twist&  twistMsg )
   str_msg.data = steeringAngle;
   chatter.publish(&str_msg);
   // Check to make sure steeringAngle is within car range
-  if (steeringAngle < minSteering) { 
-    steeringAngle = minSteering;
+  if (steeringAngle < MIN_STEERING_OUTPUT) { 
+    steeringAngle = MIN_STEERING_OUTPUT;
   }
-  if (steeringAngle > maxSteering) {
-    steeringAngle = maxSteering;
+  if (steeringAngle > MAX_STEERING_OUTPUT) {
+    steeringAngle = MAX_STEERING_OUTPUT;
   }
   steeringServo.write(steeringAngle);
   
-  int escCommand = fmap(twistMsg.linear.x, MAX_INPUT, MAX_OUTPUT, minThrottle, maxThrottle);
+  int escCommand = fmap(twistMsg.linear.x, MIN_THROTTLE_INPUT, MAX_THROTTLE_INPUT, MIN_THROTTLE_OUTPUT, MAX_THROTTLE_OUTPUT);
   // Check to make sure throttle command is within bounds
-  if (escCommand < minThrottle || escCommand > maxThrottle) { 
-    escCommand = NEUTRAL_THROTTLE;
+  if (escCommand < MIN_THROTTLE_OUTPUT || escCommand > MAX_THROTTLE_OUTPUT) { 
+    escCommand = NEUTRAL_THROTTLE; // Stop the car.
   }
   // The following could be useful for debugging
   int title2 = -2;
