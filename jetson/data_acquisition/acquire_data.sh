@@ -2,7 +2,6 @@
 
 # Run this script from ~/.../racecar/jetson/data-acquisition
 
-./setupRFCOMMport.sh
 # Run master node
 tmux new -d -s core 'roscore'
 sleep 1
@@ -16,7 +15,7 @@ tmux new -d -s ino 'rosrun rosserial_python serial_node.py $usb'
 tmux ls
 
 function stopRecording {
-	echo "\nStopping camera"
+	echo -e "\nStopping camera\n"
     tmux send -t cam '^C' ENTER
     sleep 1 
     tmux ls
