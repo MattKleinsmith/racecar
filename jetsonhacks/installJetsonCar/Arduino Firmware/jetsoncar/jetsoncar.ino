@@ -39,7 +39,7 @@ const int SPIN_DELAY = 1;
 const int STEERING_PIN = 9;
 const int THROTTLE_PIN = 11;
 const char *DEBUGGING_TOPIC = "/chatter";
-const char *COMMANDS_TOPIC = "/commands";
+const char *COMMANDS_TOPIC = "/bluetoothNode/commands";
 
 Servo steeringServo;
 Servo electronicSpeedController; // The ESC on the TRAXXAS works like a Servo

@@ -1,87 +1,97 @@
-#include <iostream>
-#include <cstdlib>
-#include <fstream>
-
-#include "boost/thread/mutex.hpp"
-#include "boost/thread/thread.hpp"
-
-#include "split.h"
+/*
+ * Copyright (c) 2010, Willow Garage, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the Willow Garage, Inc. nor the names of its
+ *       contributors may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Parts Copyright (c) 2016, JetsonHacks
+ *
+ * Parts MIT License, 2016, Matthew Kleinsmith
+ *
+ */
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include "boost/thread/mutex.hpp"
+#include "boost/thread/thread.hpp"
 #include "ros/console.h"
 
-
-class BluetoothNode
+class JetsonCarTeleop
 {
-    public:
-        BluetoothNode();
-    private:
-        ros::NodeHandle ph_, nh_;
+public:
+  JetsonCarTeleop();
 
-        void talker(std::string msg);
-        geometry_msgs::Twist last_published_;
+private:
+  void joyCallback(geometry_msgs::Twist joy);
+  void publish();
 
-        void publish();
-        ros::Publisher vel_pub_;
-        ros::Timer timer_;
-        boost::mutex publish_mutex_;
+  ros::NodeHandle ph_, nh_;
+
+  ros::Publisher vel_pub_;
+  ros::Subscriber joy_sub_;
+
+  geometry_msgs::Twist last_published_;
+  boost::mutex publish_mutex_;
+  ros::Timer timer_;
+
 };
 
-BluetoothNode::BluetoothNode():
-    ph_("~")
+JetsonCarTeleop::JetsonCarTeleop():
+  ph_("~")
 {
-    vel_pub_ = ph_.advertise<geometry_msgs::Twist>("commands", 1, true);
-    timer_ = nh_.createTimer(ros::Duration(0.1), boost::bind(&BluetoothNode::publish, this));
+  vel_pub_ = ph_.advertise<geometry_msgs::Twist>("commands", 1, true);
+  joy_sub_ = nh_.subscribe<geometry_msgs::Twist>("commands1", 10, &JetsonCarTeleop::joyCallback, this);
+
+  timer_ = nh_.createTimer(ros::Duration(0.1), boost::bind(&JetsonCarTeleop::publish, this));
 }
 
 void sleepok(int t, ros::NodeHandle &nh)
 {
-    if (nh.ok())
-        sleep(t);
+   if (nh.ok())
+     sleep(t);
 }
 
-typedef std::vector<std::string> StringVector;
-geometry_msgs::Twist createTwistMsg(std::string msg) {
-    geometry_msgs::Twist twist;
-    StringVector elems = split(msg, DELIM);
-    StringVector::const_iterator i = elems.begin();
-    twist.linear.x = *i;
-    ++i;
-    twist.angular.z =  *i;
-    return twist;
+
+void JetsonCarTeleop::joyCallback(geometry_msgs::Twist joy)
+{ 
+    last_published_ = joy;
 }
 
-void BluetoothNode::talker(std::string msg)
+void JetsonCarTeleop::publish()
 {
-    std::fstream android = setupBluetoothStream();
-    std::string msg;
-    const char DELIM = ',';
-    const int MSG_LEN = 32;
-    while (true) {
-        android >> msg;
-        if (sizeof msg == MSG_LEN) {
-            last_published_ = createTwistMsg(msg);
-        }
-    }
+  boost::mutex::scoped_lock lock(publish_mutex_);
+
+  vel_pub_.publish(last_published_);
 }
 
-void BluetoothNode::publish() {
-    boost::mutex::scoped_lock lock(publish_mutex_);
-    vel_pub_.publish(last_published_);
-}
 
-fstream setupBluetoothStream() {
-    system("./setupRFCOMMport.sh");
-    const char* bluetooth = std::getenv("bluetooth");
-    std::fstream android;
-    android.open(bluetooth);
-    return android; 
-}
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "bluetoothNode");
+  ros::NodeHandle nh ;
 
-int main(int argc, char** argv) {
-    ros::init(argc, argv, "bluetoothNode");
-    ros::NodeHandle nh;
-    BluetoothNode bluetoothNode;
-    bluetoothNode.talker();
+  JetsonCarTeleop jetsoncar_teleop;
+  ros::spin();
 }

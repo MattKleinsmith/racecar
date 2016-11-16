@@ -23,7 +23,9 @@ $installJetsonCar/setupCatkinWorkspace.sh $racecarCatkin
 cd $racecarCatkin
 
 # Install the bluetooth ROS package (custom)
-bluetooth=$dataAcquisition/bluetoothcpp
+bluetoothcpp=$dataAcquisition/bluetoothcpp
+cp -r $bluetoothcpp src
+bluetooth=$dataAcquisition/bluetooth
 cp -r $bluetooth src
 
 # Make the custom ROS packages

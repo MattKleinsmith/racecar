@@ -13,7 +13,7 @@ from std_msgs.msg import String
 
 
 def talker(bluetooth, cmdLog, cmdErr):
-    pub = rospy.Publisher('commands', Twist, queue_size=10)
+    pub = rospy.Publisher('commands1', Twist, queue_size=10)
     rospy.init_node('bluetooth')
     try:
         while True: 
@@ -22,6 +22,7 @@ def talker(bluetooth, cmdLog, cmdErr):
                 mstime = str(int(time() * 1000))
                 if msg[-1] == '\n': # Valid format: '000,000\n'
                     # Log
+                    print msg
                     cmdLog.write(mstime + "," + msg)
                     # Parse 
                     throttle = int(msg[:3])
@@ -58,8 +59,8 @@ if __name__ == '__main__':
     sudo[rfcomm['release', bluetoothDevice]]()
     sudo[rfcomm['bind', bluetoothDevice, phone, channel]]()
     bluetooth = Serial(bluetoothDevice, 921600) # Connected to Android
-    cmdFilename = 'commands.csv'
+    usbDrive = os.environ['usbDrive']
+    cmdFilename = usbDrive + '/commands.csv'
     cmdLog = open(cmdFilename + '.log', 'w')
     cmdErr = open(cmdFilename + '.error', 'w')
-
     talker(bluetooth, cmdLog, cmdErr)
