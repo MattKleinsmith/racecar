@@ -2,61 +2,30 @@ FROM ubuntu:14.04
 
 SHELL ["/bin/bash", "-c"]
 
-###############
-## Miniconda ##
-###############
+#######################
+## Python and OpenCV ##
+#######################
 
-# https://hub.docker.com/r/continuumio/miniconda/~/dockerfile/
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  wget \
-  ca-certificates
-
-RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
-    wget https://repo.continuum.io/miniconda/Miniconda2-4.1.11-Linux-x86_64.sh -O miniconda.sh && \
-    /bin/bash miniconda.sh -b -p /opt/conda && \
-    rm miniconda.sh
-
-ENV PATH /opt/conda/bin:$PATH
-RUN conda update -y \
-  setuptools
-RUN pip install --upgrade \
-  pip
-
-############
-## OpenCV ##
-############
-
-# http://www.pyimagesearch.com/2015/06/22/install-opencv-3-0-and-python-2-7-on-ubuntu/
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  gfortran \
-  libatlas-base-dev \
-  libavcodec-dev \
-  libavformat-dev \
-  libgtk2.0-dev \
-  libjasper-dev \
-  libjpeg8-dev \
-  libpng12-dev \
-  libswscale-dev \
-  libtiff4-dev \
-  libv4l-dev \
-  software-properties-common
-
-RUN add-apt-repository -y \
-  ppa:mc3man/trusty-media
+RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
+        /etc/apt/sources.list.d/ros-latest.list && \
+    apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  ffmpeg
+  ros-indigo-ros-base
 
-# https://anaconda.org/menpo/opencv3
-RUN conda install -y -c \
-  menpo opencv3=3.1.0
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  ros-indigo-opencv3
+
+RUN rosdep init && \
+    rosdep update && \
+    echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
 
 #############################
 ## Other Python libraries ##
 #############################
 
-RUN pip install \
-  h5py
+#RUN pip install \
+#  h5py
 
 ############
 ### Misc. ##
