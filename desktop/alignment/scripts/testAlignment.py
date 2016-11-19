@@ -4,9 +4,6 @@ import h5py
 
 PATH = '../data/'
 ID = '2016-11-16--07-51-06'
-START_MS = 15 * 1000
-END_MS = (2 * 60 + 17) * 1000
-FRAME_RATE = 30
 CAM_H5_SUFFIX = '_cam'
 CMD_H5_SUFFIX = '_cmd'
 H5_SUFFIX = '.h5'
@@ -25,12 +22,8 @@ cam_dset = cam_h5['images']
 cmd_h5 = h5py.File(prefix + CMD_H5_SUFFIX + H5_SUFFIX, 'r')
 cmd_dset = cmd_h5['commands']
 
-msPerFrame = 1000.0 / FRAME_RATE
-firstFrameIndex = START_MS / msPerFrame
-lastFrameIndex = END_MS / msPerFrame
-
-frameIndex = firstFrame
-while frameIndex != lastFrameIndex + 1:
+frameIndex = firstFrameIndex
+while frameIndex != len(cam_dset):
     frame = cam_dset[frameIndex]
     command = cmd_dset[frameIndex]
     text = str(command[1])
