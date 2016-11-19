@@ -4,9 +4,12 @@ import h5py
 
 PATH = '../data/'
 ID = '2016-11-16--07-51-06'
-FRAME_RATE = 30
 START_MS = 15 * 1000
 END_MS = (2 * 60 + 17) * 1000
+FRAME_RATE = 30
+CAM_H5_SUFFIX = '_cam'
+CMD_H5_SUFFIX = '_cmd'
+H5_SUFFIX = '.h5'
 
 TEXT_COORD = (130, 100)
 FONT = cv2.FONT_HERSHEY_SIMPLEX
@@ -16,9 +19,10 @@ THICKNESS = 2
 LINE_TYPE = cv2.LINE_AA
 WINDOW_TITLE = 'OpenCV'
 
-cam_h5 = h5py.File(PATH + ID + '_cam.h5', 'r')
+prefix = PATH + ID
+cam_h5 = h5py.File(prefix + CAM_H5_SUFFIX + H5_SUFFIX, 'r')
 cam_dset = cam_h5['images']
-cmd_h5 = h5py.File(PATH + ID + '_cmd.h5', 'r')
+cmd_h5 = h5py.File(prefix + CMD_H5_SUFFIX + H5_SUFFIX, 'r')
 cmd_dset = cmd_h5['commands']
 
 msPerFrame = 1000.0 / FRAME_RATE

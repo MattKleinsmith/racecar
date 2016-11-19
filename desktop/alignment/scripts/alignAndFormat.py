@@ -11,18 +11,25 @@ def getClosestCommand(clock, commands):
 
 PATH = '../data/'
 ID = '2016-11-16--07-51-06'
-FRAME_RATE = 30
 START_MS = 15 * 1000
 END_MS = (2 * 60 + 17) * 1000
-CAM_FILENAME = PATH + ID + '.mp4'
-CMD_FILENAME = PATH + ID + '_commands.csv'
-with open(PATH + ID + '_cam_clock.txt') as f:
-    CLOCK0 = int(f.readline().strip())
+FRAME_RATE = 30
+CAM_SUFFIX = '.mp4'
+CMD_SUFFIX = '_commands.csv'
+CLOCK_SUFFIX = '_cam_clock.txt'
+CAM_H5_SUFFIX = '_cam'
+CMD_H5_SUFFIX = '_cmd'
+H5_SUFFIX = '.h5'
 
-cap = cv2.VideoCapture(CAM_FILENAME)
-cam_h5 = h5py.File(PATH + ID + '_cam.h5', 'w')
-commands = pd.read_csv(CMD_FILENAME, header=None)
-cmd_h5 = h5py.File(PATH + ID + '_cmd.h5', 'w')
+prefix = PATH + ID
+cam_filename = prefix + CAM_SUFFIX
+cmd_filename = prefix + CMD_SUFFIX
+with open(prefix + CLOCK_SUFFIX) as f:
+    clock0 = int(f.readline().strip())
+cap = cv2.VideoCapture(cam_filename)
+cam_h5 = h5py.File(prefix + CAM_H5_SUFFIX + H5_SUFFIX, 'w')
+commands = pd.read_csv(cmd_filename, header=None)
+cmd_h5 = h5py.File(prefix + CMD_H5_SUFFIX + H5_SUFFIX, 'w')
 
 commands.apply(pd.to_numeric)
 commands.columns = ['clock', 'throttle', 'steering']
@@ -40,7 +47,7 @@ cam_dset = cam_h5.create_dataset('images',
 cmd_dset = cmd_h5.create_dataset('commands', (frameCount, 2))
 
 cap.set(cv2.CAP_PROP_POS_FRAMES, firstFrameIndex)
-clock = CLOCK0 + START_MS
+clock = clock0 + START_MS
 frameIndex = firstFrameIndex
 while frameIndex != lastFrameIndex + 1:
     print str(frameIndex) + '/' + str(lastFrameIndex) + ' '*4 + str(int(clock))
