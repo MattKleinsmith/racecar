@@ -37,7 +37,8 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
 ############################
 
 RUN pip install \
-  h5py
+  h5py \
+  pandas
 
 #########
 ## GUI ##
@@ -65,6 +66,6 @@ ENV QT_X11_NO_MITSHM 1
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY /scripts /scripts
-WORKDIR /scripts
-CMD bash -c "source /opt/ros/indigo/setup.bash && python play_video.py"
+RUN echo "source /opt/ros/indigo/setup.bash" >> "/home/$USERNAME/.bashrc"
+
+CMD bash -c "source /opt/ros/indigo/setup.bash && python scripts/alignAndFormat.py"
