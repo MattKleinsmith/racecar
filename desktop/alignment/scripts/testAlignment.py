@@ -1,6 +1,5 @@
 import cv2
 import h5py
-import pandas as pd
 
 
 PATH = '../data/'
