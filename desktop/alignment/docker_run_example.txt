@@ -1,0 +1,9 @@
+XSOCK=/tmp/.X11-unix
+DATA=~/code/racecar/desktop/alignment/data
+
+docker run --rm -it \
+    -e DISPLAY=$DISPLAY \
+    -v $XSOCK:$XSOCK:ro \
+    -u gui_user \
+    -v $DATA:/data \
+    matthewkleinsmith/racecar:alignment

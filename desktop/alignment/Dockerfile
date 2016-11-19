@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-c"]
 ## Python and OpenCV ##
 #######################
 
-# ROS's opencv3 package has video support. Conda's and others' doesn't.
+# ROS's opencv3 package has video support. Conda's and others' don't.
 RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
         /etc/apt/sources.list.d/ros-latest.list && \
     apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
