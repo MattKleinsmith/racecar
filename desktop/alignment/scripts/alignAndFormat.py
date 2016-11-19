@@ -1,27 +1,56 @@
 import cv2
 import h5py
+import pandas as pd
 
 
-FILENAME = "../data/2016-11-16--07-51-06.mp4"
-cap = cv2.VideoCapture(FILENAME)
-while not cap.isOpened():
-    cap = cv2.VideoCapture(FILENAME)
-    cv2.waitKey(5000)
-    print "Wait for the header"
-print cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
-print cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)
+def getClosestCommand(clock, commands):  
+    commands['diffs'] = abs(commands['clock'] - clock)
+    commandRow = commands.iloc[commands['diffs'].idxmin()]
+    command = (commandRow['throttle'], commandRow['steering'])
+    return command
 
-try:
-    while True:
-        ret, frame = cap.read()
-        print ret
-        if cv2.waitKey(1) & 0xFF == ord('q') or not ret:
-            break
-        try:
-            cv2.imshow('frame', frame)
-        except cv2.error as e:
-            print e
-            break
-except Exception as e:
-    print e
+PATH = '../data/'
+ID = '2016-11-16--07-51-06'
+FRAME_RATE = 30
+START_MS = 15 * 1000
+END_MS = (2 * 60 + 17) * 1000
+CAM_FILENAME = PATH + ID + '.mp4'
+CMD_FILENAME = PATH + ID + '_commands.csv'
+with open(PATH + ID + '_cam_clock.txt') as f:
+    CLOCK0 = int(f.readline().strip())
+
+cap = cv2.VideoCapture(CAM_FILENAME)
+cam_h5 = h5py.File(PATH + ID + '_cam.h5', 'w')
+commands = pd.read_csv(CMD_FILENAME, header=None)
+cmd_h5 = h5py.File(PATH + ID + '_cmd.h5', 'w')
+
+commands.apply(pd.to_numeric)
+commands.columns = ['clock', 'throttle', 'steering']
+
+msPerFrame = 1000.0 / FRAME_RATE
+firstFrameIndex = START_MS / msPerFrame
+lastFrameIndex = END_MS / msPerFrame
+
+ret, frame = cap.read()
+height, width, nchannels = frame.shape
+frameCount = (lastFrameIndex - firstFrameIndex) + 1
+cam_dset = cam_h5.create_dataset('images',
+                                 (frameCount, height, width, nchannels),
+                                 dtype='uint8')
+cmd_dset = cmd_h5.create_dataset('commands', (frameCount, 2))
+
+cap.set(cv2.CAP_PROP_POS_FRAMES, firstFrameIndex)
+clock = CLOCK0 + START_MS
+frameIndex = firstFrameIndex
+while frameIndex != lastFrameIndex + 1:
+    print str(frameIndex) + '/' + str(lastFrameIndex) + ' '*4 + str(int(clock))
+    outputFrameIndex = frameIndex - firstFrameIndex
+    ret, frame = cap.read()
+    cam_dset[outputFrameIndex] = frame
+    command = getClosestCommand(clock, commands)
+    cmd_dset[outputFrameIndex] = command
+    clock += msPerFrame
+    frameIndex += 1
 cap.release()
+cam_h5.close()
+cmd_h5.close()
