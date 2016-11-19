@@ -22,8 +22,7 @@ cam_dset = cam_h5['images']
 cmd_h5 = h5py.File(prefix + CMD_H5_SUFFIX + H5_SUFFIX, 'r')
 cmd_dset = cmd_h5['commands']
 
-frameIndex = firstFrameIndex
-while frameIndex != len(cam_dset):
+for frameIndex in xrange(len(cam_dset)):
     frame = cam_dset[frameIndex]
     command = cmd_dset[frameIndex]
     text = str(command[1])
