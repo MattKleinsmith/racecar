@@ -1,6 +1,7 @@
 import cv2
 import h5py
 import pandas as pd
+import numpy as np
 
 
 def getClosestCommand(clock, commands):  
@@ -9,10 +10,16 @@ def getClosestCommand(clock, commands):
     command = (commandRow['throttle'], commandRow['steering'])
     return command
 
+def milliseconds(hours, minutes, seconds):
+    hms = (hours, minutes, seconds)
+    msInSec = 1000
+    secVector = (3600, 60, 1)
+    return np.dot(secVector, hms) * msInSec
+
 PATH = '../data/'
 ID = '2016-11-16--07-51-06'
-START_MS = 15 * 1000
-END_MS = (2 * 60 + 17) * 1000
+START_MS = milliseconds(hours=0, minutes=0, seconds=15)
+END_MS   = milliseconds(hours=0, minutes=2, seconds=17)
 FRAME_RATE = 30
 CAM_SUFFIX = '.mp4'
 CMD_SUFFIX = '_commands.csv'
@@ -22,14 +29,14 @@ CMD_H5_SUFFIX = '_cmd'
 H5_SUFFIX = '.h5'
 
 prefix = PATH + ID
-cam_filename = prefix + CAM_SUFFIX
-cmd_filename = prefix + CMD_SUFFIX
+camFilename = prefix + CAM_SUFFIX
+cmdFilename = prefix + CMD_SUFFIX
 with open(prefix + CLOCK_SUFFIX) as f:
     clock0 = int(f.readline().strip())
-cap = cv2.VideoCapture(cam_filename)
-cam_h5 = h5py.File(prefix + CAM_H5_SUFFIX + H5_SUFFIX, 'w')
-commands = pd.read_csv(cmd_filename, header=None)
-cmd_h5 = h5py.File(prefix + CMD_H5_SUFFIX + H5_SUFFIX, 'w')
+cap = cv2.VideoCapture(camFilename)
+camH5 = h5py.File(prefix + CAM_H5_SUFFIX + H5_SUFFIX, 'w')
+commands = pd.read_csv(cmdFilename, header=None)
+cmdH5 = h5py.File(prefix + CMD_H5_SUFFIX + H5_SUFFIX, 'w')
 
 commands.apply(pd.to_numeric)
 commands.columns = ['clock', 'throttle', 'steering']
@@ -41,10 +48,11 @@ lastFrameIndex = END_MS / msPerFrame
 ret, frame = cap.read()
 height, width, nchannels = frame.shape
 frameCount = (lastFrameIndex - firstFrameIndex) + 1
-cam_dset = cam_h5.create_dataset('images',
+camDset = camH5.create_dataset('images',
                                  (frameCount, height, width, nchannels),
                                  dtype='uint8')
-cmd_dset = cmd_h5.create_dataset('commands', (frameCount, 2))
+throttleCmds = cmdH5.create_dataset('throttle', (frameCount, 1))
+steeringCmds = cmdH5.create_dataset('steering', (frameCount, 1))
 
 cap.set(cv2.CAP_PROP_POS_FRAMES, firstFrameIndex)
 clock = clock0 + START_MS
@@ -53,11 +61,12 @@ while frameIndex != lastFrameIndex + 1:
     print str(frameIndex) + '/' + str(lastFrameIndex) + ' '*4 + str(int(clock))
     outputFrameIndex = frameIndex - firstFrameIndex
     ret, frame = cap.read()
-    cam_dset[outputFrameIndex] = frame
-    command = getClosestCommand(clock, commands)
-    cmd_dset[outputFrameIndex] = command
+    camDset[outputFrameIndex] = frame
+    throttle, steering = getClosestCommand(clock, commands)
+    throttleCmds[outputFrameIndex] = throttle
+    steeringCmds[outputFrameIndex] = steering
     clock += msPerFrame
     frameIndex += 1
 cap.release()
-cam_h5.close()
-cmd_h5.close()
+camH5.close()
+cmdH5.close()
