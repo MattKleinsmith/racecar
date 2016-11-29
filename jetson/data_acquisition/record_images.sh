@@ -2,9 +2,16 @@ datetime=$(date +"%Y-%m-%d--%H-%M-%S")
 echo $datetime > $cameraDatetime
 date +%s%3N > $usbDrive/${datetime}_cam_clock.txt
 gst-launch-1.0 \
-    nvcamerasrc sensor-id=0 ! \
-    'video/x-raw(memory:NVMM),width=320,height=160,framerate=30/1,format=NV12' ! \
+    nvcamerasrc ! \
+    'video/x-raw(memory:NVMM),
+    width=(int)320,
+    height=(int)160,
+    format=(string)I420,
+    framerate=(fraction)24/1' ! \
     nvvidconv flip-method=2 ! \
-    omxh264enc ! \
-    qtmux ! \
+    'video/x-raw,
+    format=(string)BGRx' ! \
+    videoconvert ! \
+    'video/x-raw, \
+    format=(string)BGR' ! \
     filesink location=$usbDrive/$datetime.mp4 -ev
